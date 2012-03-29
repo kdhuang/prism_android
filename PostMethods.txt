@@ -1,0 +1,44 @@
+ 				String url = "http://10.100.1.236:8000/v1/13/1/imagesink/1/";
+ 				File file = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+	        	try{
+      				 FileReader input = new FileReader(file);
+      				 BufferedReader bufRead = new BufferedReader(input);
+      				 String s = null;
+      				 int b = 10;
+      				 URLConnection connection = new URL(url).openConnection();
+      				 connection.setDoOutput(true); // Triggers POST
+      				 connection.setRequestProperty("Content-Type", "image/jpeg");
+      				 OutputStream output = null;
+      				 try {
+      					 output = connection.getOutputStream();
+      					 while ((s = bufRead.readLine()) != null)   {
+      						 output.write(s.getBytes());
+      						 output.write(b);
+      					 }
+      				 } finally {
+      					 if (output != null) try { output.close();} catch (IOException logOrIgnore) {}
+      				 }
+      				 InputStream response = connection.getInputStream();
+//      				 URLEncoder.encode(response,"UTF-8");
+      	        	} catch (IOException e) {
+      	        		Log.e(e.getClass().getName(), e.getMessage());
+      	        	}
+	        	
+	        	String url = "http://10.100.1.236:8000/v1/13/1/imagesink/1/";
+	        	File file = new File(Environment.getExternalStorageDirectory(), "test.jpg");
+	        	try {
+	        	    HttpClient httpclient = new DefaultHttpClient();
+
+	        	    HttpPost httppost = new HttpPost(url);
+
+	        	    InputStreamEntity reqEntity = new InputStreamEntity(
+	        	            new FileInputStream(file), -1);
+	        	    reqEntity.setContentType("image/jpeg");
+	        	    reqEntity.setChunked(true); // Send in multiple parts if needed
+	        	    httppost.setEntity(reqEntity);
+	        	    HttpResponse response = httpclient.execute(httppost);
+	        	    //Do something with response...
+
+	        	} catch (Exception e) {
+	        	    // show error
+	        	}
