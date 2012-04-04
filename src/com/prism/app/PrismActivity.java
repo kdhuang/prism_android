@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.view.Window;
 
 public class PrismActivity extends Activity {
     /** Called when the activity is first created. */
@@ -19,6 +18,8 @@ public class PrismActivity extends Activity {
         ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
+        bar.setDisplayShowHomeEnabled(false); //hide title bars
+        bar.setDisplayShowTitleEnabled(false);
         
         ActionBar.Tab tab1 = bar.newTab().setText("Capture"); // setIcon(R.drawable.ic_tab)
         ActionBar.Tab tab2 = bar.newTab().setText("See");

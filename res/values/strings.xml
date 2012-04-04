@@ -3,6 +3,7 @@
 
     <string name="hello">Hello World, PrismActivity!</string>
     <string name="app_name">Prism Skylabs</string>
-    <string name="camera">Camera</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 
 </resources>
