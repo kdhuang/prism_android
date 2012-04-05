@@ -2,10 +2,8 @@ package com.prism.app;
 
 import java.io.IOException;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -58,7 +56,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // set preview size and make any resize, rotate or
         // reformatting changes here
-
+        
         // start preview with new settings
         try {
             mCamera.setPreviewDisplay(mHolder);
