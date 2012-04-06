@@ -97,6 +97,22 @@ public class OneFragmentTab extends Fragment {
 	        }
 	    }
 	}
+	
+	private void postHTTP() {
+    	new Thread(new Runnable() {
+			public void run() {
+				try {
+					DefaultHttpClient httpClient = new DefaultHttpClient();
+					HttpPost post = new HttpPost("http://10.100.1.236:8000/v1/13/1/imagesink/1/");  //-X PUT
+					post.setEntity(new FileEntity(new File(Environment.getExternalStorageDirectory(), "Prism/test.jpg"), "image/jpeg"));  //@ - absolute path
+					httpClient.execute(post);
+				} catch(Exception e) {
+					//-f, fail silently
+					//http://stackoverflow.com/questions/9487115/hitting-java-web-service-curl-or-urlconnection
+				}
+			}
+		}).start();
+	}
 
 	private void takeSnapshot() {
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -135,6 +151,7 @@ public class OneFragmentTab extends Fragment {
 	            FileOutputStream fos = new FileOutputStream(pictureFile);
 	            fos.write(data);
 	            fos.close();
+	            postHTTP();
 	        } catch (FileNotFoundException e) {
 	            Log.d(TAG, "File not found: " + e.getMessage());
 	        } catch (IOException e) {
