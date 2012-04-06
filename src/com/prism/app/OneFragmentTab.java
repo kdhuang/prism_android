@@ -64,6 +64,10 @@ public class OneFragmentTab extends Fragment {
         FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_preview);
         preview.addView(mpreview);
         
+//        Camera.Parameters params = camera.getParameters();
+//        params.setJpegQuality(100);
+//        camera.setParameters(params);
+        
         return view;
     }
 	
