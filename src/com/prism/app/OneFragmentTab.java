@@ -11,16 +11,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +26,9 @@ import android.widget.FrameLayout;
 
 public class OneFragmentTab extends Fragment {
 	
-	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
 	public static final int MEDIA_TYPE_IMAGE = 1;
-	private Uri outputFileUri;
 	private Timer timer = new Timer();
-    private static final long UPDATE_INTERVAL = 1000*60*1; //each minute
+    private static final long UPDATE_INTERVAL = 1000*10*1; //each minute (60)
 	protected static final String TAG = null;
     private CameraPreview mpreview;
     private Camera camera;
@@ -53,12 +47,14 @@ public class OneFragmentTab extends Fragment {
         start.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
               // Action on click
-        		camera.takePicture(null, null, picture);
+        		takeSnapshot();
         	}
         });
         stop.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
               // Action on click
+        		timer.cancel();
+//        		camera.release();
         	}
         });
         
@@ -70,33 +66,6 @@ public class OneFragmentTab extends Fragment {
         
         return view;
     }
-	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-	        if (resultCode == Activity.RESULT_OK) {
-	        	// post image to server
-	        	new Thread(new Runnable() {
-					public void run() {
-						try {
-							DefaultHttpClient httpClient = new DefaultHttpClient();
-							HttpPost post = new HttpPost("http://iapi-staging.prismsl.net/v1/15/1/imagesink/7/");  //-X PUT
-							post.setEntity(new FileEntity(new File(Environment.getExternalStorageDirectory(), "test.jpg"), "image/jpeg"));  //@ - absolute path
-							httpClient.execute(post);
-						} catch(Exception e) {
-							//-f, fail silently
-							//http://stackoverflow.com/questions/9487115/hitting-java-web-service-curl-or-urlconnection
-						}
-					}
-				}).start();
-
-	        } else if (resultCode == Activity.RESULT_CANCELED) {
-	            // User cancelled the image capture
-	        } else {
-	            // Image capture failed, advise user
-	        }
-	    }
-	}
 	
 	private void postHTTP() {
     	new Thread(new Runnable() {
@@ -140,7 +109,7 @@ public class OneFragmentTab extends Fragment {
 
 	    @Override
 	    public void onPictureTaken(byte[] data, Camera camera) {
-
+	    	camera.startPreview();
 	        File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
 	        if (pictureFile == null){
 	            Log.d(TAG, "Error creating media file, check storage permissions: ");
