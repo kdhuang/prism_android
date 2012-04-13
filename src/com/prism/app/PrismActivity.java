@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 public class PrismActivity extends Activity {
     /** Called when the activity is first created. */
@@ -17,9 +19,8 @@ public class PrismActivity extends Activity {
 
         ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
-        bar.setDisplayShowHomeEnabled(false); //hide title bars
-        bar.setDisplayShowTitleEnabled(false);
+//        bar.setDisplayShowHomeEnabled(false); //hide title bars
+//        bar.setDisplayShowTitleEnabled(false); //hide app title
         
         ActionBar.Tab tab1 = bar.newTab().setText("Capture"); // setIcon(R.drawable.ic_tab)
         ActionBar.Tab tab2 = bar.newTab().setText("See");
@@ -39,6 +40,13 @@ public class PrismActivity extends Activity {
         
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    
     protected class MyTabsListener implements ActionBar.TabListener {
 
         private Fragment fragment;
