@@ -12,6 +12,7 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 public class OneFragmentTab extends Fragment {
 	
@@ -32,6 +34,8 @@ public class OneFragmentTab extends Fragment {
 	protected static final String TAG = null;
     private CameraPreview mpreview;
     private Camera camera;
+	protected String FILENAME = "uri";
+    private String url;
     
     //context = getActivity().getApplicationContext()
     
@@ -41,7 +45,7 @@ public class OneFragmentTab extends Fragment {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
         final View view = inflater.inflate(R.layout.fragment_one, container, false);
-        
+        getURL();
         final Button start = (Button) view.findViewById(R.id.button1);
         final Button stop = (Button) view.findViewById(R.id.button2);
         start.setOnClickListener(new View.OnClickListener() {
@@ -71,12 +75,16 @@ public class OneFragmentTab extends Fragment {
         return view;
     }
 	
-	private void postHTTP() {
+	private void getURL() {
+		url = PrismActivity.getURL();
+	}
+	
+	private void postHTTP() {		
     	new Thread(new Runnable() {
 			public void run() {
 				try {
 					DefaultHttpClient httpClient = new DefaultHttpClient();
-					HttpPost post = new HttpPost("http://10.100.1.236:8000/v1/13/1/imagesink/1/");  //-X PUT
+					HttpPost post = new HttpPost(url);  //-X PUT
 					post.setEntity(new FileEntity(new File(Environment.getExternalStorageDirectory(), "Prism/test.jpg"), "image/jpeg"));  //@ - absolute path
 					httpClient.execute(post);
 				} catch(Exception e) {
