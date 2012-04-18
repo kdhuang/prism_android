@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PrismActivity extends Activity {
@@ -40,6 +41,7 @@ public class PrismActivity extends Activity {
     private static final long UPDATE_INTERVAL = 1000*10*1; //each minute (60)
     private CameraPreview mpreview;
     private Camera camera;
+    private boolean startstop;
 	
     /** Called when the activity is first created. */
     @Override
@@ -48,18 +50,26 @@ public class PrismActivity extends Activity {
         setContentView(R.layout.main);
         
         final Button start = (Button) findViewById(R.id.button1);
-        final Button stop = (Button) findViewById(R.id.button2);
+        final Button rotate = (Button) findViewById(R.id.button2);
         
+        startstop = true;
         start.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-              // Action on click
-        		takeSnapshot();
+        		TextView tv = (TextView) findViewById(R.id.button1);
+        		if (startstop) {
+        			takeSnapshot();
+        			tv.setText("Stop");
+        			startstop = false;
+        		} else {
+        			timer.cancel();
+        			tv.setText("Start");
+        			startstop = true;
+        		}
         	}
         });
-        stop.setOnClickListener(new View.OnClickListener() {
+        rotate.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-              // Action on click
-        		timer.cancel();
+        		
         	}
         });
         
@@ -75,20 +85,23 @@ public class PrismActivity extends Activity {
         LoadPreferences();
     }
     
-    private void SavePreferences(String key, String value) {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.commit();
-    }
-      
-    private void LoadPreferences() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        uri = sharedPreferences.getString("URL", "");
-        if (uri == "") {
-        	uri = "http://iapi-staging.prismsl.net/v1/15/1/imagesink/7/";
-        }
-    }
+//    @Override
+//	public void onPause() {
+////		FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+////		preview.removeAllViews();
+//    	camera.stopPreview();
+//    	camera.release();
+//		super.onPause();
+//	}
+    
+//	public void onResume() {
+//        camera = getCameraInstance();
+//        camera.setDisplayOrientation(90);
+//        mpreview = new CameraPreview(this, camera);
+//        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+//        preview.addView(mpreview);
+//		super.onResume();
+//	}
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,6 +123,21 @@ public class PrismActivity extends Activity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    private void SavePreferences(String key, String value) {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+      
+    private void LoadPreferences() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        uri = sharedPreferences.getString("URL", "");
+        if (uri == "") {
+        	uri = "http://iapi-staging.prismsl.net/v1/15/1/imagesink/7/";
+        }
     }
     
 	private void postHTTP() {		
@@ -154,6 +182,10 @@ public class PrismActivity extends Activity {
 
 	    @Override
 	    public void onPictureTaken(byte[] data, Camera camera) {
+	    	try {Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 	    	camera.startPreview();
 	        File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
 	        if (pictureFile == null){
@@ -172,8 +204,6 @@ public class PrismActivity extends Activity {
 	        }
 	    }
 	};
-	
-	// Saving files
 
 	private static File getOutputMediaFile(int type){
 	    // To be safe, you should check that the SDCard is mounted
@@ -188,7 +218,6 @@ public class PrismActivity extends Activity {
 	            return null;
 	        }
 	    }
-
 	    // Create a media file name
 	    File mediaFile;
 	    if (type == MEDIA_TYPE_IMAGE){
