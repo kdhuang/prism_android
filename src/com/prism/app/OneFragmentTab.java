@@ -42,7 +42,7 @@ public class OneFragmentTab extends Fragment {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
         final View view = inflater.inflate(R.layout.fragment_one, container, false);
-        getURL();
+//        getURL();
         final Button start = (Button) view.findViewById(R.id.button1);
         final Button stop = (Button) view.findViewById(R.id.button2);
         start.setOnClickListener(new View.OnClickListener() {
@@ -83,9 +83,9 @@ public class OneFragmentTab extends Fragment {
 //		super.onResume();
 //	}
 	
-	public static void getURL() {
-		url = PrismActivity.getURL();
-	}
+//	public static void getURL() {
+//		url = PrismActivity.getURL();
+//	}
 	
 	private void postHTTP() {		
     	new Thread(new Runnable() {
