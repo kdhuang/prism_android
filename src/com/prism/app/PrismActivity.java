@@ -9,6 +9,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,16 +20,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class PrismActivity extends Activity {
-	protected static String uri = "http://iapi-staging.prismsl.net/v1/15/1/imagesink/7/";
+	protected static String uri;
 	protected static final String TAG = null;
-	protected String FILENAME = "uri";
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        LoadPreferences();
+        
         ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 //        bar.setDisplayShowHomeEnabled(false); //hide title bars
@@ -48,12 +49,25 @@ public class PrismActivity extends Activity {
 
         bar.addTab(tab1);
         bar.addTab(tab2);
-        bar.addTab(tab3);
-        
+        bar.addTab(tab3);   
+    }
+    
+    private void SavePreferences(String key, String value) {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+      
+    private void LoadPreferences() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        uri = sharedPreferences.getString("URL", "");
+        if (uri == "") {
+        	uri = "http://iapi-staging.prismsl.net/v1/15/1/imagesink/7/";
+        }
     }
     
     protected class MyTabsListener implements ActionBar.TabListener {
-
         private Fragment fragment;
 
         public MyTabsListener(Fragment fragment) {
@@ -62,13 +76,11 @@ public class PrismActivity extends Activity {
 
         public void onTabReselected(Tab tab, FragmentTransaction ft) {
             // TODO Auto-generated method stub
-
         }
 
         public void onTabSelected(Tab tab, FragmentTransaction ft) {
             // TODO Auto-generated method stub
             ft.add(R.id.fragment_place, fragment, null);
-
         }
 
         public void onTabUnselected(Tab tab, FragmentTransaction ft) {
@@ -93,7 +105,6 @@ public class PrismActivity extends Activity {
             case R.id.signout:
                 return true;
         }
-     
         return super.onOptionsItemSelected(item);
     }
     
@@ -101,11 +112,7 @@ public class PrismActivity extends Activity {
     	final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
     	alert.setTitle("Settings");
-    	alert.setMessage("Change your upload settings.");
-
-    	// Set an EditText view to get user input 
-//    	final EditText input = new EditText(this);
-//    	alert.setView(input);
+    	alert.setMessage("Change your upload settings.\n\nCurrent: "+ uri);
     	
     	LayoutInflater inflater = LayoutInflater.from(this);
         final View view=inflater.inflate(R.layout.my_dialog_layout, null);
@@ -120,6 +127,8 @@ public class PrismActivity extends Activity {
     			String account = input1.getText().toString();
     			String imagesink = input2.getText().toString();
     			uri = "http://" + base_url + "/v1/" + account + "/1/imagesink/" + imagesink;
+    			SavePreferences("URL", uri);
+    			OneFragmentTab.getURL();
     			Context context = getApplicationContext();
     			CharSequence text = uri + " saved.";
     			int duration = Toast.LENGTH_SHORT;
@@ -135,7 +144,6 @@ public class PrismActivity extends Activity {
     			dialog.dismiss();
     		}
     	});
-
     	alert.show();
     	// see http://androidsnippets.com/prompt-user-input-with-an-alertdialog
     }
@@ -143,5 +151,4 @@ public class PrismActivity extends Activity {
     public static String getURL() {
     	return uri;
     }
-    
 }

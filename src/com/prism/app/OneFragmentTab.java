@@ -35,7 +35,7 @@ public class OneFragmentTab extends Fragment {
     private CameraPreview mpreview;
     private Camera camera;
 	protected String FILENAME = "uri";
-    private String url;
+    private static String url;
     
     //context = getActivity().getApplicationContext()
     
@@ -59,6 +59,10 @@ public class OneFragmentTab extends Fragment {
               // Action on click
         		timer.cancel();
 //        		camera.release();
+    			Context context = getActivity().getApplicationContext();
+    			int duration = Toast.LENGTH_SHORT;
+    			Toast toast = Toast.makeText(context, url, duration);
+    			toast.show();
         	}
         });
         
@@ -75,7 +79,7 @@ public class OneFragmentTab extends Fragment {
         return view;
     }
 	
-	private void getURL() {
+	public static void getURL() {
 		url = PrismActivity.getURL();
 	}
 	
@@ -149,8 +153,6 @@ public class OneFragmentTab extends Fragment {
 	    // using Environment.getExternalStorageState() before doing this.
 
 	    File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Prism");
-	    // This location works best if you want the created images to be shared
-	    // between applications and persist after your app has been uninstalled.
 
 	    // Create the storage directory if it does not exist
 	    if (! mediaStorageDir.exists()){
@@ -163,15 +165,12 @@ public class OneFragmentTab extends Fragment {
 	    // Create a media file name
 	    File mediaFile;
 	    if (type == MEDIA_TYPE_IMAGE){
-	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	        "test.jpg");
+	        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "test.jpg");
 //	    } else if(type == MEDIA_TYPE_VIDEO) {
-//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-//	        "VID_"+ timeStamp + ".mp4");
+//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
 	    } else {
 	        return null;
 	    }
-
 	    return mediaFile;
 	}
 }
