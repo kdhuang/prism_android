@@ -22,7 +22,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
-
+    
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
@@ -36,6 +36,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceDestroyed(SurfaceHolder holder) {
         // empty. Take care of releasing the Camera preview in your activity.
     	mCamera.release(); //need to take care of case when app is not closed completely still need to release
+//    	mCamera.stopPreview();
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -49,7 +50,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // stop preview before making changes
         try {
-//            mCamera.stopPreview();
+            mCamera.stopPreview();
         } catch (Exception e){
           // ignore: tried to stop a non-existent preview
         }

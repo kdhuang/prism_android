@@ -12,7 +12,6 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
@@ -24,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 public class OneFragmentTab extends Fragment {
 	
@@ -34,7 +32,6 @@ public class OneFragmentTab extends Fragment {
 	protected static final String TAG = null;
     private CameraPreview mpreview;
     private Camera camera;
-	protected String FILENAME = "uri";
     private static String url;
     
     //context = getActivity().getApplicationContext()
@@ -59,10 +56,6 @@ public class OneFragmentTab extends Fragment {
               // Action on click
         		timer.cancel();
 //        		camera.release();
-    			Context context = getActivity().getApplicationContext();
-    			int duration = Toast.LENGTH_SHORT;
-    			Toast toast = Toast.makeText(context, url, duration);
-    			toast.show();
         	}
         });
         
@@ -71,13 +64,24 @@ public class OneFragmentTab extends Fragment {
         mpreview = new CameraPreview(getActivity().getApplicationContext(), camera);
         FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_preview);
         preview.addView(mpreview);
-        
 //        Camera.Parameters params = camera.getParameters();
 //        params.setJpegQuality(100);
 //        camera.setParameters(params);
-        
         return view;
     }
+	
+	
+	public void onPause() {
+//		FrameLayout preview = (FrameLayout) (ViewGroup)getView().findViewById(R.id.camera_preview);
+//		preview.removeView(mpreview);
+		super.onPause();
+	}
+	
+//	public void onResume() {
+//		FrameLayout preview = (FrameLayout) (ViewGroup)getView().findViewById(R.id.camera_preview);
+//		preview.addView(mpreview);
+//		super.onResume();
+//	}
 	
 	public static void getURL() {
 		url = PrismActivity.getURL();
@@ -115,7 +119,7 @@ public class OneFragmentTab extends Fragment {
 	    try {
 	        c = Camera.open(); // attempt to get a Camera instance -- open(int) depending on camera #
 	    }
-	    catch (Exception e){
+	    catch (Exception e) {
 	        // Camera is not available (in use or does not exist)
 	    }
 	    return c; // returns null if camera is unavailable
@@ -143,7 +147,6 @@ public class OneFragmentTab extends Fragment {
 	            Log.d(TAG, "Error accessing file: " + e.getMessage());
 	        }
 	    }
-	    
 	};
 	
 	// Saving files

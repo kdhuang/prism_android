@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,14 +43,14 @@ public class PrismActivity extends Activity {
         Fragment fragment1 = new OneFragmentTab();
         Fragment fragment2 = new TwoFragmentTab();
         Fragment fragment3 = new ThreeFragmentTab();
-       
+        
         tab1.setTabListener(new MyTabsListener(fragment1));
         tab2.setTabListener(new MyTabsListener(fragment2));
         tab3.setTabListener(new MyTabsListener(fragment3));
 
         bar.addTab(tab1);
         bar.addTab(tab2);
-        bar.addTab(tab3);   
+        bar.addTab(tab3);
     }
     
     private void SavePreferences(String key, String value) {
@@ -112,7 +113,7 @@ public class PrismActivity extends Activity {
     	final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
     	alert.setTitle("Settings");
-    	alert.setMessage("Change your upload settings.\n\nCurrent: "+ uri);
+    	alert.setMessage("Current Server:\n"+ uri);
     	
     	LayoutInflater inflater = LayoutInflater.from(this);
         final View view=inflater.inflate(R.layout.my_dialog_layout, null);
@@ -123,16 +124,26 @@ public class PrismActivity extends Activity {
     			EditText input = (EditText) view.findViewById(R.id.base_url_input);
     			EditText input1 = (EditText) view.findViewById(R.id.account_number_input);
     			EditText input2 = (EditText) view.findViewById(R.id.sink_number_input);
+    			
     			String base_url = input.getText().toString();
     			String account = input1.getText().toString();
     			String imagesink = input2.getText().toString();
-    			uri = "http://" + base_url + "/v1/" + account + "/1/imagesink/" + imagesink;
-    			SavePreferences("URL", uri);
-    			OneFragmentTab.getURL();
+    			
     			Context context = getApplicationContext();
-    			CharSequence text = uri + " saved.";
     			int duration = Toast.LENGTH_SHORT;
-    			Toast toast = Toast.makeText(context, text, duration);
+    			Toast toast;
+    			
+    			if (base_url.isEmpty() || account.isEmpty() || imagesink.isEmpty()) {
+    				CharSequence text = "Sorry, some fields were not completed. Form not saved.";
+    				toast = Toast.makeText(context, text, duration);
+    				//make it so dialog does not close?
+    			} else {
+    				uri = "http://" + base_url + "/v1/" + account + "/1/imagesink/" + imagesink;
+    				SavePreferences("URL", uri);
+    				OneFragmentTab.getURL();
+    				CharSequence text = uri + " saved.";
+    				toast = Toast.makeText(context, text, duration);
+    			}
     			toast.show();
     			dialog.dismiss();
     		}
