@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -37,8 +39,9 @@ public class PrismActivity extends Activity {
 	protected static String uri;
 	protected static final String TAG = null;
 	public static final int MEDIA_TYPE_IMAGE = 1;
-	private Timer timer = new Timer();
+	private Timer timer;
     private static final long UPDATE_INTERVAL = 1000*10*1; //each minute (60)
+	private static final int IMAGE_WIDTH = 1280;
     private CameraPreview mpreview;
     private Camera camera;
     private boolean startstop;
@@ -57,6 +60,7 @@ public class PrismActivity extends Activity {
         	public void onClick(View v) {
         		TextView tv = (TextView) findViewById(R.id.button1);
         		if (startstop) {
+        			timer = new Timer();
         			takeSnapshot();
         			tv.setText("Stop");
         			startstop = false;
@@ -73,37 +77,26 @@ public class PrismActivity extends Activity {
         	}
         });
         
+        // set up camera
         camera = getCameraInstance();
+        Camera.Parameters params = camera.getParameters();
+		List<Size> sizes = params.getSupportedPictureSizes();
+		for (int i=0;i<sizes.size();i++){
+			if (sizes.get(i).width == IMAGE_WIDTH) {
+				params.setPictureSize(sizes.get(i).width, sizes.get(i).height);
+				break;
+			}
+		}
+		camera.setParameters(params);
         camera.setDisplayOrientation(90);
         mpreview = new CameraPreview(this, camera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mpreview);
-//        Camera.Parameters params = camera.getParameters();
-//        params.setJpegQuality(100);
-//        camera.setParameters(params);
         
         LoadPreferences();
     }
-    
-//    @Override
-//	public void onPause() {
-////		FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-////		preview.removeAllViews();
-//    	camera.stopPreview();
-//    	camera.release();
-//		super.onPause();
-//	}
-    
-//	public void onResume() {
-//        camera = getCameraInstance();
-//        camera.setDisplayOrientation(90);
-//        mpreview = new CameraPreview(this, camera);
-//        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-//        preview.addView(mpreview);
-//		super.onResume();
-//	}
-    
-    @Override
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
@@ -114,7 +107,6 @@ public class PrismActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         	case R.id.accounts:
-        		showDialog();
         		return true;
             case R.id.settings:
             	showDialog();
@@ -170,7 +162,7 @@ public class PrismActivity extends Activity {
 	public static Camera getCameraInstance(){
 	    Camera c = null;
 	    try {
-	        c = Camera.open(); // attempt to get a Camera instance -- open(int) depending on camera #
+	        c = Camera.open(); // attempt to get a Camera instance -- open(int) depending on camera #	        
 	    }
 	    catch (Exception e) {
 	        // Camera is not available (in use or does not exist)
