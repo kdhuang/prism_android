@@ -36,15 +36,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PrismActivity extends Activity {
+	private static final long UPDATE_INTERVAL = 1000*10*1; //each minute (60)
+	private static final int IMAGE_WIDTH = 1280;
+	public static final String FOCUS_MODE_AUTO = "auto";
 	protected static String uri;
 	protected static final String TAG = null;
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	private Timer timer;
-    private static final long UPDATE_INTERVAL = 1000*10*1; //each minute (60)
-	private static final int IMAGE_WIDTH = 1280;
     private CameraPreview mpreview;
     private Camera camera;
     private boolean startstop;
+    FrameLayout preview;
 	
     /** Called when the activity is first created. */
     @Override
@@ -87,15 +89,43 @@ public class PrismActivity extends Activity {
 				break;
 			}
 		}
+		params.setFocusMode(FOCUS_MODE_AUTO);
 		camera.setParameters(params);
         camera.setDisplayOrientation(90);
         mpreview = new CameraPreview(this, camera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mpreview);
         
         LoadPreferences();
     }
-
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	if (camera == null) {
+    		camera = Camera.open();
+			camera.setDisplayOrientation(90);
+	        mpreview = new CameraPreview(this, camera);
+	        preview.removeAllViews();
+	        preview.addView(mpreview);
+			camera.startPreview();
+    	} else {
+    	}
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseCamera();
+    }
+    
+    private void releaseCamera(){
+        if (camera != null){
+            camera.release();
+            camera = null;
+        }
+    }
+    
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -174,7 +204,8 @@ public class PrismActivity extends Activity {
 
 	    @Override
 	    public void onPictureTaken(byte[] data, Camera camera) {
-	    	try {Thread.sleep(1000);
+	    	try {
+	    		Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
