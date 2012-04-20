@@ -13,6 +13,7 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.prism.app.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,7 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PrismActivity extends Activity {
-	private static final long UPDATE_INTERVAL = 1000*10*1; //each minute (60)
+	private static final long UPDATE_INTERVAL = 1000*10*1; //middle number is seconds
 	private static final int IMAGE_WIDTH = 1280;
 	public static final String FOCUS_MODE_AUTO = "auto";
 	protected static String uri;
@@ -46,7 +48,9 @@ public class PrismActivity extends Activity {
     private CameraPreview mpreview;
     private Camera camera;
     private boolean startstop;
+    private boolean screenOn;
     FrameLayout preview;
+    PowerManager.WakeLock wl;
 	
     /** Called when the activity is first created. */
     @Override
@@ -56,6 +60,9 @@ public class PrismActivity extends Activity {
         
         final Button start = (Button) findViewById(R.id.button1);
         final Button rotate = (Button) findViewById(R.id.button2);
+        
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+	    wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "ScreenOn");
         
         startstop = true;
         start.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +143,23 @@ public class PrismActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        	case R.id.brightness:
+        		Context context = getApplicationContext();
+    			int duration = Toast.LENGTH_SHORT;
+    			Toast toast;
+        		if (screenOn) {
+        	    	wl.release();
+        	    	screenOn = false;
+        	    	CharSequence text = "Screen will dim and turn off.";
+        	    	toast = Toast.makeText(context, text, duration);
+        	    } else {
+        	    	wl.acquire();
+        	    	screenOn = true;
+        	    	CharSequence text = "Screen will now stay on.";
+        	    	toast = Toast.makeText(context, text, duration);
+        	    }
+        		toast.show();
+        		return true;
         	case R.id.accounts:
         		return true;
             case R.id.settings:
