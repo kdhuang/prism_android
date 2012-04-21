@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +35,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +54,7 @@ public class PrismActivity extends Activity {
     private boolean screenOn;
     FrameLayout preview;
     PowerManager.WakeLock wl;
+    Toast ImageToast;
 	
     /** Called when the activity is first created. */
     @Override
@@ -59,7 +63,7 @@ public class PrismActivity extends Activity {
         setContentView(R.layout.main);
         
         final Button start = (Button) findViewById(R.id.button1);
-        final Button rotate = (Button) findViewById(R.id.button2);
+//        final Button rotate = (Button) findViewById(R.id.button2);
         
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 	    wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "ScreenOn");
@@ -80,11 +84,24 @@ public class PrismActivity extends Activity {
         		}
         	}
         });
-        rotate.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View v) {
-        		
-        	}
-        });
+//        rotate.setOnClickListener(new View.OnClickListener() {
+//        	public void onClick(View v) {
+//        		
+//        	}
+//        });
+        
+        ImageToast = new Toast(getBaseContext());
+        LinearLayout toastLayout = new LinearLayout(getBaseContext());
+        toastLayout.setOrientation(LinearLayout.VERTICAL);
+        ImageView image = new ImageView(getBaseContext());
+        TextView text = new TextView(getBaseContext());
+        image.setImageResource(R.drawable.orientation);
+        toastLayout.addView(image);
+        toastLayout.addView(text);
+        ImageToast.setView(toastLayout);
+        ImageToast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        ImageToast.setDuration(Toast.LENGTH_LONG);
+        ImageToast.show();
         
         // set up camera
         camera = getCameraInstance();
@@ -116,6 +133,7 @@ public class PrismActivity extends Activity {
 	        preview.removeAllViews();
 	        preview.addView(mpreview);
 			camera.startPreview();
+			ImageToast.show();
     	} else {
     	}
     }
