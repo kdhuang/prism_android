@@ -142,6 +142,10 @@ public class PrismActivity extends Activity {
     protected void onPause() {
         super.onPause();
         releaseCamera();
+        if (screenOn) {
+        	wl.release();
+        	screenOn = false;
+        }
     }
     
     private void releaseCamera(){

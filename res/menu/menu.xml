@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/brightness"
-    	android:icon="@drawable/brightness_high"
-        android:showAsAction="ifRoom" />
+    	android:icon="@drawable/brightness_low"
+        android:showAsAction="ifRoom"/>
 	<item android:id="@+id/accounts"
         android:title="@string/accounts"
         android:showAsAction="withText"/>    

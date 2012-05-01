@@ -13,20 +13,22 @@ public final class R {
     public static final class drawable {
         public static final int brightness_high=0x7f020000;
         public static final int brightness_low=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int orientation=0x7f020003;
+        public static final int brightness_selected=0x7f020002;
+        public static final int ic_launcher=0x7f020003;
+        public static final int orientation=0x7f020004;
     }
     public static final class id {
-        public static final int account_number_input=0x7f060005;
-        public static final int accounts=0x7f060008;
-        public static final int base_url_input=0x7f060004;
-        public static final int brightness=0x7f060007;
+        public static final int account_number_input=0x7f060006;
+        public static final int accounts=0x7f060009;
+        public static final int base_url_input=0x7f060005;
+        public static final int brightness=0x7f060008;
         public static final int button1=0x7f060001;
         public static final int button2=0x7f060002;
         public static final int camera_preview=0x7f060000;
-        public static final int settings=0x7f060009;
-        public static final int signout=0x7f06000a;
-        public static final int sink_number_input=0x7f060006;
+        public static final int relativeLayout1=0x7f060004;
+        public static final int settings=0x7f06000a;
+        public static final int signout=0x7f06000b;
+        public static final int sink_number_input=0x7f060007;
         public static final int text=0x7f060003;
     }
     public static final class layout {
