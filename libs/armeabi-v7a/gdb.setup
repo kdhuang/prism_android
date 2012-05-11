@@ -1,0 +1,2 @@
+set solib-search-path ./obj/local/armeabi-v7a
+directory /home/khuang13/workspace/android-ndk-r8/platforms/android-14/arch-arm/usr/include /home/khuang13/workspace/android-ndk-r8/sources/cxx-stl/gnu-libstdc++

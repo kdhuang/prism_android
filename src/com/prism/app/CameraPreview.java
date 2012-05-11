@@ -4,13 +4,16 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
-    private Camera mCamera;
-    
+    private Camera mCamera;   
 
     public CameraPreview(Context context, Camera camera) {
         super(context);
@@ -52,8 +55,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.stopPreview();
         } catch (Exception e){
           // ignore: tried to stop a non-existent preview
-        }
-
+        }                      
+    	
         // set preview size and make any resize, rotate or
         // reformatting changes here
         
@@ -61,7 +64,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
-
         } catch (Exception e){
             // catch error starting camera
         }

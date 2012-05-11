@@ -23,7 +23,7 @@
         	android:layout_centerHorizontal="true"
         	android:layout_alignParentBottom="true"
         	android:rotation="90"
-        	android:padding="5dp"
+        	android:padding="10dp"
         	android:text="@string/start" />
 
 	</RelativeLayout>

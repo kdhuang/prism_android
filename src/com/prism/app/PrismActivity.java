@@ -148,7 +148,7 @@ public class PrismActivity extends Activity {
         }
     }
     
-    private void releaseCamera(){
+    private void releaseCamera() {
         if (camera != null){
             camera.release();
             camera = null;
@@ -217,7 +217,6 @@ public class PrismActivity extends Activity {
 					post.setEntity(new FileEntity(new File(Environment.getExternalStorageDirectory(), "Prism/test.jpg"), "image/jpeg"));  //@ - absolute path
 					httpClient.execute(post);
 				} catch(Exception e) {
-					//-f, fail silently
 					//http://stackoverflow.com/questions/9487115/hitting-java-web-service-curl-or-urlconnection
 				}
 			}
@@ -235,7 +234,7 @@ public class PrismActivity extends Activity {
 	}
 	
 	/** A safe way to get an instance of the Camera object. */
-	public static Camera getCameraInstance(){
+	public static Camera getCameraInstance() {
 	    Camera c = null;
 	    try {
 	        c = Camera.open(); // attempt to get a Camera instance -- open(int) depending on camera #	        
@@ -274,9 +273,7 @@ public class PrismActivity extends Activity {
 	    }
 	};
 
-	private static File getOutputMediaFile(int type){
-	    // To be safe, you should check that the SDCard is mounted
-	    // using Environment.getExternalStorageState() before doing this.
+	private static File getOutputMediaFile(int type) {
 
 	    File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Prism");
 
@@ -289,10 +286,8 @@ public class PrismActivity extends Activity {
 	    }
 	    // Create a media file name
 	    File mediaFile;
-	    if (type == MEDIA_TYPE_IMAGE){
+	    if (type == MEDIA_TYPE_IMAGE) {
 	        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "test.jpg");
-//	    } else if(type == MEDIA_TYPE_VIDEO) {
-//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
 	    } else {
 	        return null;
 	    }
